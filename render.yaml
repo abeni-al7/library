@@ -1,0 +1,22 @@
+databases:
+  - name: librarydb
+    plan: free
+    databaseName: librarydb
+    user: librarydb
+
+services:
+  - type: web
+    plan: free
+    name: library
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "python -m gunicorn django_project.wsgi"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: librarydb
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4
